@@ -10,7 +10,11 @@
 
 (ls "-l" {:seq true})
 
+(def SCREENSHOT-ROOT "/media/marc/proximity/bl/screenshots/")
 
+(sort
+(map #(.toString %)
+     (fs/glob (str SCREENSHOT-ROOT "run_*"))))
 
 (sh/with-programs [ls]
   (ls {:seq true :verbose true}))
