@@ -1,6 +1,9 @@
 (ns user
-  (:require (me.raynes [fs :as fs]
+  (:require (wmrd-becoming-post [core :as c])
+            (me.raynes [fs :as fs]
                        [conch :as sh])))
+
+;; --- Testing.
 
 (.getFile (clojure.java.io/resource "genavi.sh"))
 
@@ -22,8 +25,14 @@
 
  )
 
+(fs/expand-home "~/Desktop")
 
 (fs/glob "README*")
 
 (binding [fs/*cwd* (fs/expand-home "~/Desktop")]
   (fs/glob "*.mov"))
+
+;; --- Testing findrun
+
+(let [screenshot-root (fs/expand-home "~/Desktop/screenshotRoot")]
+  )

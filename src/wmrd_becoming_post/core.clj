@@ -1,6 +1,5 @@
-(ns wmrd-becoming-post.core)
+(ns wmrd-becoming-post.core
+  (:require (wmrd-becoming-post [manifest :as m])))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn main []
+  )
