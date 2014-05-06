@@ -1,5 +1,5 @@
 (ns user
-  (:require (wmrd-becoming-post [core :as c])
+  (:require #_ (wmrd-becoming-post [core :as c])
             (me.raynes [fs :as fs]
                        [conch :as sh])))
 
@@ -52,20 +52,43 @@
 
 ;; Find combo with most iterations, but be satisfied with 30:
 
-(defn biggest-shot [best best-shot runs]
-  (when-let [[{:keys [run shots]} & rest] (seq runs)]
-    ;; iterate over shots!
-    (let [{:keys [shot iters]} shots]
-      (cond (> best 30)
-            best-shot
-            (> (count iters) best)
-            (biggest-shot (count iters) shot rest)
-            :else
-            (biggest-shot best best-shot rest)))
-    best-shot))
+(defn find-best-shot [shots
+                      {:keys [best-shot most-iters]
+                       :as result}]
 
-;;(biggest-shot 0 nil runs)
-(:shots (first runs))
+  (if-let [[{:keys [shot iters]} & rest] (seq shots)]
+    (let [c (count iters)]
+      (if (> c most-iters)
+        (if (> c 30)
+          {:most-iters c
+           :best-shot shot}
+          (find-best-shot rest {:most-iters c
+                                :best-shot shot}))
+        (find-best-shot rest result)))
+    result))
+
+(defn find-best-shot-from-runs [runs
+                                {:keys [best-shot most-iters]
+                                 :as result}]
+  (if-let [[{:keys [run shots]} & rest] (seq runs)]
+    (recur rest
+           (find-best-shot shots result))
+    result))
+
+(def b
+  (find-best-shot-from-runs runs {:best-shot nil :most-iters -1}))
+
+(:best-shot b)
+
+(.mkdirs
+ (java.io.File. (:best-shot b) "bundle"))
+
+(str (:best-shot b) "/iteration_*/full_a.jpg")
+
+;; Glob busted!
+(fs/glob (str (:best-shot b) "/iteration_*/full_a.jpg"))
+
+
 
 
 
